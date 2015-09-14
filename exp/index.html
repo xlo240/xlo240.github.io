@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Untitled Document</title>
+<script src="libs/crafty-min.js"></script>
+</head>
+
+<body>
+<div id="game"></div>
+<script>
+Crafty.init(300,300, document.getElementById('game'));
+Crafty.e('2D, Canvas, Color, Mouse')
+    .attr({
+        x: 0,
+        y: 0,
+        w: 300,
+        h: 300
+    })
+    .color('#333')
+    .bind('MouseMove', function () {
+        player.x = Crafty.mousePos.x - (32 / 2);
+        player.y = Crafty.mousePos.y - (32 / 2);
+    });
+
+Crafty.c('Enemy', {
+    init: function () {
+        this
+            .addComponent('2D, Canvas, Color')
+            .attr({
+                x: 134,
+                y: 134,
+                w: 32,
+                h: 32
+            })
+            .color('#ff0');
+    }
+})
+
+var enemy = Crafty.e('Enemy');
+
+var player = Crafty.e('2D, Canvas, Color, Collision, WiredHitBox')
+    .attr({
+        x: 134,
+        y: 134,
+        w: 32,
+        h: 32
+    })
+    .color('#f00');
+player
+    .collision(new Crafty.polygon([0,0], [0,6], [8, 13], [24,13], [32,6], [32,0]))
+    .onHit('Enemy',
+        function() {
+            enemy.color('#fff');
+        },
+        function() {
+            enemy.color('#ff0');
+        }
+    );
+
+</script>
+</body>
+</html>
