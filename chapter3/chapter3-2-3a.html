@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Untitled Document</title>
+<script type="text/javascript" src="crafty.js"></script>
+<script type="text/javascript" src="jquery-2.1.3.js"></script>
+
+</head>
+
+<body>
+<div style="vertical-align:top">
+ <div id="game" style="display: table-cell">
+ </div>
+<script>
+var skinName="skins/skin2/";
+Game = {
+        start: function(sceneName) {
+
+            ////////Сцена "level1" //////////////////////////
+            Crafty.scene("level1",function() {
+                /***************************
+                    Игровой мир
+                ***************************/
+                alert("Игровой мир");
+
+Crafty.background('url('+skinName+'img/bg.png)');
+//Crafty.audio.setChannels(5); // устанавливает кол-во каналов
+Crafty.audio.play("shopot_snd", -1); //фоновый звук another_snd
+//Crafty.audio.play("another_snd");
+
+// Добавление объектов, слушателей событий на объекты
+// Малина					
+Crafty.e('2D, DOM, Mouse, malina')
+	.attr({x: 150, y: 150, w: 100, h: 100})
+	.bind("Click", function(e){
+		if(e.mouseButton == Crafty.mouseButtons.LEFT) {
+			Crafty.audio.play("magic_snd");
+			//Crafty.audio.play("shopot_snd");
+			$('#debug').append("(on click) magic_snd<br>");
+		}
+	})
+	.bind("MouseOver", function(e){
+		Crafty.audio.play("smeh_snd");
+		$('#debug').append("(on over) смех<br>");
+	});
+// Кнопка Demo
+Crafty.e('2D, DOM, Mouse, demo')
+	.attr({x: 250, y: 250, w: 100, h: 50})
+	.bind("Click", function(e) {
+		if(e.mouseButton == Crafty.mouseButtons.LEFT) {
+		Crafty.audio.play("another_snd");
+		$('#debug').append("запуск по клику another.mp3 <br>");
+		}
+	})
+	.bind("MouseOver", function(e){
+		Crafty.audio.play("smeh_snd");
+		$('#debug').append("(on over) смех<br>");
+	});
+	
+
+//Кнопка Меню
+Crafty.e('2D, DOM, Mouse, menu')
+	.attr({x: 100, y: 300, w: 200, h: 100})
+	.bind("Click", function(e) {
+		if(e.mouseButton == Crafty.mouseButtons.LEFT) {
+		Crafty.audio.play("another_snd");
+		$('#debug').append("запуск по клику another.mp3 <br>");
+		}
+	})
+	.bind("MouseOver", function(e){
+		Crafty.audio.play("smeh_snd");
+		$('#debug').append("смех<br>");
+	})	;
+
+			
+	
+			});
+            //////end of "level1" scene ////////////////////
+            
+        //////Сцена "loading" ////////////////////////
+	Crafty.scene("loading", function () {
+       /*******************************************************************
+           Загрузка ресурсов, отображение прогресса загрузки и т.д.
+********************************************************************/
+	var assetsObj = {
+           
+            "audio": {
+				"another_snd": ["another.mp3", "another.ogg", "another.wav"],
+				"shopot_snd": ["shopot.mp3", "shopot.ogg", "shopot.wav"],
+				"smeh_snd": ["smeh.mp3", "smeh.ogg", "smeh.wav"],
+				"magic_snd": ["star.mp3", "star.ogg", "star.wav"]
+                            },
+              "sprites": {
+		  "spritemap.png": {
+		                               "tile": 50, 
+                                       "tileh": 50,
+		                               "map": {
+					        "malina" : [ 2, 0, 2, 2 ], 
+					        "demo": [0, 2, 2, 1], 
+					        "menu": [0, 3, 4, 2],
+						}
+				        }
+			}
+			
+           };
+		   //------------------------------------------------------
+Crafty.paths({ audio: skinName+'sound/', images: skinName+'img/' });
+		   
+Crafty.load(assetsObj,
+                  function() { //функция выполняется когда все ассеты загружены
+              
+Crafty.scene(sceneName); //и после - старт ОСНОВНОЙ (sceneName) игровой //сцены
+			},
+                   
+			function(e) { //progress
+				$('#debug').append("загружаем: "+e.src+"<br>");
+			},
+        
+			function(e) { // error loading
+				alert("error");
+			}
+		);
+           
+            
+	});
+            ////////////конец сцены "loading" /////////////
+            
+            Crafty.scene("loading"); //загружаем сцену "loading"
+            
+        }, //конец метода "start"
+
+   
+        init: function() {
+       /*******************************************************************
+           Инициализация Crafty: размеры, привязка к контейнеру и т.д.
+ *******************************************************************/
+Crafty.init(640, 480, document.getElementById('game')); //инициализация Crafty
+       
+            Game.start("level1"); //загружаем сцену "level1"
+
+            } //конец метода "init"
+    
+    } //конец игрового объекта "Game"
+
+/*******************************************************************
+        СТАРТ! (весь процесс начинается с этого места)
+********************************************************************/
+    $(document).ready(function() {
+        //после того, как все загрузилось в DOM - стартуем игру:
+        Game.init(); //запуск игрового объекта "Game"
+    });
+
+</script>
+<div id="debug" style="display:table-cell">
+</div>
+</div>
+</body>
+</html>

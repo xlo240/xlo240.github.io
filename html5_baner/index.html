@@ -1,0 +1,333 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="height=device-height, width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>test</title>
+     <script src="libs/crafty-min.js"></script>
+     <script src="libs/jquery.js"></script>
+	
+  </head>
+  <body style="margin:0;padding:0" bgcolor="#FFFF99">
+    <table align="center" width="700">
+	<tr><td height="250"></td></tr>
+	<tr><td width="250"><div id="game">
+    </div>
+	<div id="info3">aaaaa</div></td>
+	<td width="250"></td>
+	<td width="250"></td>
+	
+	</tr>
+	</table>
+    
+
+    <script>
+
+Game = {
+
+start: function(sceneName) {
+
+
+///////////////////////////////////////////
+//////////SCENE: Menu /////////////////////
+///////////////////////////////////////////
+Crafty.defineScene("Menu", function () {
+	var wona_eat = "ХОЧУ ЕСТЬ"; var wona_game = "Хочу игрушку"; var wona_walk = "Хочу гулять";
+       Crafty.background('#fff'); //background
+	    //Crafty.background('#FFFF99');
+	   
+	   var sobak = Crafty.e("2D, DOM, dog").attr({x: 38, y: 5, w: 123, h: 144});
+	   var key_over1 = Crafty.e("2D, DOM, HTML, Mouse, key_over").attr({alpha: 0.0, x: 35, y: 145, w: 119, h:46})
+	   .bind('MouseOut', function(MouseEvent){
+			$("#info3").text('Mouse Out');
+			this.attr({alpha: 0.0});
+			key_idle1.attr({x:35});
+	   })
+	   .bind('MouseDown',function(e){
+     if(e.mouseButton == Crafty.mouseButtons.LEFT ) {
+       $("#info3").text('MouseDown');
+	   this.attr({x: 40, y: 150});
+	   
+
+     }
+   })
+   .bind('MouseUp',function(e){
+     if(e.mouseButton == Crafty.mouseButtons.LEFT ) {
+       $("#info3").text('MouseUp');
+	   this.attr({x: 35, y: 145});
+	   //document.location('http://xlo.shotme.ru');
+	   document.location.href = 'http://xlo.shotme.ru';
+     }
+   })
+   	   ;
+	   
+	   var key_idle1 =  Crafty.e("2D, DOM, Mouse, key_idle").attr({x: 35, y: 145, w: 119, h:46})
+	.bind('MouseOver', function (e){
+		$("#info3").text('MouseOver');
+		this.attr({x:-300});
+	key_over1.attr({alpha: 1.0});
+  });
+  
+  var flag_text = Crafty.e("2D, DOM, Text").attr({x:52, y:70, w:200})
+	.textFont({ type: 'bold', family: 'Arial', size:"16px" })
+	.text(wona_eat).css({"color":"#fff"})
+	.unselectable();
+  
+  var phone_text = Crafty.e("2D, DOM, Tween, Text").attr({x:-300, y:190, w:200})
+	.textFont({ type: 'bold', family: 'Arial', size:"18px" })
+	.text('+7 (495) 565-38-84').css({"color":"#ff0000"})
+	.tween({x:20}, 500)
+	.unselectable();
+	
+	var url_text = Crafty.e("2D, DOM, Tween, Text").attr({x:-600, y:207, w:200})
+	.textFont({ type: 'bold', family: 'Arial', size:"18px" })
+	.text('dogsmarket.ru').css({"color":"#ff6500"})
+	.tween({x:35}, 1000)
+	.unselectable();
+	
+	var slogan_text = Crafty.e("2D, DOM, Tween, slogan_txt").attr({x:15, y:260, w:174, h:30});
+  /*
+	var slogan_text = Crafty.e("2D, DOM, Tween, Text").attr({x:1, y:185, w:200, h:100})
+	.textFont({ type: 'bold', family: 'Arial' }) //, size:"14px"
+	.text('<p align="center"><span style="color:#FF6500; font-size:16px">НИЗКИЕ ЦЕНЫ</span><br><span style="color:#FF0000; font-size:12px">ЗООТОВАРЫ В АССОРТИМЕНТЕ</span></p>')//.css({"color":"#ff0000"}) //"text-align":"center"
+	.unselectable();
+	*/
+  var lapa = Crafty.e("2D, DOM, SpriteAnimation, lapa_anim").attr({x:110, y:114})
+  .reel('PlayerRunning', 3000, 0, 0, 83) // setup animation //скорость, x y в матричном измерении, колво кадров в спрайте
+  .animate('PlayerRunning', -1)
+  ;
+  
+  var count = 1;
+	Crafty.e("Delay").delay(function() { //повтор каждый 3 сек
+	
+	switch (count) {
+	case 1: {
+		flag_text.text(wona_game).textFont({size:"15px"}); count ++; break;
+	}
+	case 2: {
+		flag_text.text(wona_walk).textFont({size:"16px"}); count ++; break;
+		}
+	case 3: {
+		flag_text.text(wona_eat); count = 1; break;
+		}
+	}
+	
+	}, 3000, -1);
+	
+	var count2 = 1; var delay_count = 3000;
+	Crafty.e("Delay").delay(function() {
+		
+		switch (count2) {
+	case 1: {
+		//url_text.tween({x:35}, 500); count2 ++; break;
+		$("#info3").text('тел и урл уезжает case '+count2);
+		url_text.tween({x:300}, 500); //тел и урл уезжает
+		 phone_text.tween({x:300}, 500);
+		 count2 ++; break;
+	}
+	case 2: {
+		 $("#info3").text('case '+count2);
+		 url_text.attr({x:-600}); phone_text.attr({x:-300}); //возвр на исходную позицию
+		 slogan_text.attr({alpha:1.0, x:100, y:195, w:5, h:1}).tween({x:15, y:195, w:174, h:30}, 500);
+		$("#info3").text('Рекламный слоган'); //slogan_text
+		 count2 ++; break;
+		}
+	case 3: {
+		$("#info3").text('Рекламный слоган исчезает');
+		slogan_text.tween({alpha: 0.0}, 1000);
+		 count2 ++; break;
+		}
+	case 4: {
+		$("#info3").text('begin');
+		phone_text.tween({x:20}, 500); url_text.tween({x:35}, 1000);
+		 count2 = 1; break;
+		}
+	}
+		
+	}, delay_count, -1);
+});
+
+
+///////////////////////////////////////////
+//////////SCENE: loading //////////////////
+///////////////////////////////////////////
+Crafty.defineScene("loading", function () { //defineScene определить сцену 
+       Crafty.background('#fff');
+
+       Crafty.e("2D, HTML") //объект html
+        //.css({ "text-align" : "center","color":"white","width":Crafty.DOM.window.width,"height":Crafty.DOM.window.height}) // задаем стиль
+		.css({ "text-align" : "center","color":"red","width":200,"height":240}) // задаем стиль
+        //replace вставляем html код для визуализации прогресс бара
+		//.replace('<div style="position:absolute;display:inline-block;left:'+(Crafty.DOM.window.width/2-200/2)+'px;top:'+(Crafty.DOM.window.height/2-200/2)+'px"><h1>Loading...&nbsp;<span id="progress"></span>%<br><div style="background:#FF0;width:200px"><div id="progressbar" style="position:relative;height:1em;background:#F00"></div></div></h1></div>');
+        .replace('<div style="position:absolute;display:inline-block;left:'+(200/2-200/2)+'px;top:'+(240/2-200/2)+'px"><h1>Loading...&nbsp;<span id="progress"></span>%<br><div style="background:#FF0;width:200px"><div id="progressbar" style="position:relative;height:1em;background:#F00"></div></div></h1></div>');
+		$("#progress").text('0'); //0% <span id="progress"></span>%
+		//$("#info3").text('0');
+
+
+
+var onLoad = function() {
+
+/*
+///simulate loading resources/////////
+counter=setInterval(function() {
+  val=parseInt($("#progress").text())+Math.floor(5*Math.random());
+
+  if (val<100) {
+         $("#progress").text(val);
+         $("#progressbar").width(val*2);
+  } else {
+         $("#progress").text('100');
+         $("#progressbar").width(100*2);
+         clearInterval(counter);
+
+         Crafty.enterScene(sceneName); ///ЗАПУСК ОСНОВНОЙ СЦЕНЫ
+
+
+         //alert('Загружено!');
+  }
+},50);
+//////////////////////////////////////
+*/
+
+        Crafty.enterScene(sceneName); ///ЗАПУСК ОСНОВНОЙ СЦЕНЫ
+
+};
+
+
+var onProgress=function(data) {
+
+	val=data.percent.toFixed(0);//в data помещ знач %. percent(Crafty) toFixed(0) точность до целого. Метод JS
+
+	if (val<100) {
+		$("#progress").text(val); //знач %
+		$("#progressbar").width(val*2); // прогресс. Ширина заполняющего слоя 200px Процентов 100, поэтому умножаем на 2
+	} else {
+		$("#progress").text('100');
+		$("#progressbar").width(100*2);
+	}
+
+	//console.log('success: ' + data.src); //покажет какой ресурс был загружен
+	//$("#info3").text('success: '+ data.src);
+};
+
+
+
+var onError=function(data) {
+	console.log('---Failed!---');
+	console.log(data);
+	console.log('-------------');
+	alert("Ошибка загрузки ресурса:\n ["+data.src+"]"); //покажет какой ресурс не был загружен
+	$("#info3").text('Ошибка загрузки ресурса:\n '+ data.src);
+};
+
+
+////////ASSETS////////////////////////////////////////
+var assets={
+'Menu':	{
+        'paths':{ images: "assets/menu/images/", sounds: "assets/menu/sounds/" },
+        
+	'sprites':{
+		'dog_bg.png':{
+			"tile":123,
+			"tileh":144,
+			"map":{"dog":[0,0]}
+		},//,еще объекты через запятую
+	'key.png': {
+				"tile":119,
+				"tileh":46,
+				"map": {"key_idle":[0,0, 1,1], "key_over": [0,1, 1,1]}
+	},
+	'slogan.png': {
+				"tile":174,
+				"tileh":30,
+				"map": {"slogan_txt": [0,0]}
+		},
+	'lapa1.png': {
+				"tile": 46,
+				"tileh": 35,
+				"map": {"lapa_anim": [0,0]}
+				}
+
+	}
+},
+/*
+'Level1':{
+
+        
+		'audio': {
+                   'bgsound': ['assets/Menu/sounds/forest.mp3','assets/Menu/sounds/forest.ogg'],
+         },
+		 
+		 'sprites': {
+			
+			'grl1.png': {
+				"tile":85, //85 correct если меньше 85 то кадры идут с лева направа и наоборот
+				"tileh":200,
+				"map": {"multik":[0,0]}
+			},
+			
+			'grl2.png': {
+				"tile":40,
+				"tileh":50,
+				"map": {"multik2":[0,0]}
+			}
+		 }
+
+},
+*/
+
+};
+//////////////////////////////////////////////////////////////////////
+Crafty.paths(assets[sceneName]['paths']); //считывается из массива путей и помещается в Crafty.paths (243)
+assets[sceneName]['paths']=[]; //из массива assets удаляются пути ресурсов для текущей сцены. Чтобы не было конфликта с Crafty.removeAssets(assets[fromScene]); (288)
+
+////Освобождаем память для новой сцены. fromScene - из предыдущей сцены
+Crafty.removeAssets(assets[fromScene]);
+Crafty.assets=[]; //удаляет все ассеты
+
+//после зачистки загружаем новую сцену
+Crafty.load(
+assets[sceneName], //загрузка ассетов
+onLoad, //выполняется вызов объекта когда ассеты загружены
+onProgress, //вызывается пока происходит загрузка
+onError //выз когда ошибка
+);
+
+});
+
+
+
+Crafty.enterScene("loading"); // стр 175 Loading
+
+}, //end of start game
+
+
+init: function() {
+ //Crafty.init(Crafty.DOM.window.width,Crafty.DOM.window.height,document.getElementById('game'));
+ Crafty.init(200,240,document.getElementById('game'));
+ Crafty.bind('SceneChange',function (data) { //событие смены сцены. 
+  fromScene=data.oldScene; //переменная fromScene из какой сцены вышли. oldScene и newScene -- значения обработчика события SceneChange переменные Crafty
+  toScene=data.newScene; // toScene в какую идем. data.newScene возвращает имя сцены
+  Crafty.e("2D").destroy(); //уничтожение предыдущей сцены
+  Crafty.audio.stop();
+
+ });
+
+ Game.start("Menu"); //выз стр 21 --> стр 302 Crafty.enterScene("loading");
+
+} //end init...
+
+} //game object
+
+////MAIN START
+$(document).ready(function() {
+  $('.sitescopy').remove();
+  Game.init();
+});
+
+
+    </script>
+
+  </body>
+</html>

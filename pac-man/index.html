@@ -1,0 +1,388 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="height=device-height, width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>test</title>
+     <script src="libs/crafty-min.js"></script>
+     <script src="libs/jquery.js"></script>
+  </head>
+  <body style="margin:0;padding:0">
+    <div id="info" style="z-index:1;position:absolute"></div>
+    <div id="info2" style="z-index:1;position:absolute;top:20px;"></div>
+    <div id="game">
+    </div>
+
+    <script>
+
+Game = {
+
+start: function(sceneName) {
+
+/////////////Scene: LEVEL 1////////////////
+///////////////////////////////////////////
+Crafty.defineScene("Level1", function () {
+
+     ///Задаём фон через изображение
+     noselect='; -moz-user-select: none; -khtml-user-select: none;  -webkit-user-select: none; -o-user-select: none; ';
+     background = '<img id="bg_image" src="assets/'+sceneName+'/images/bg.jpg" style="width:'+document.body.clientWidth+'px;height:'+document.body.clientHeight+'px'+noselect+'">';
+//background = '<img id="bg_image" src="assets/'+sceneName+'/images/bg.jpg" style="width: 640px;height: 480px'+noselect+'">';
+
+     //Вставляем фон с блоком надписи
+     
+	 Crafty.e("2D, HTML")
+       // .css({ "text-align" : "center","color":"white","width":Crafty.DOM.window.width,"height":Crafty.DOM.window.height})
+       // .replace(background+'<div style="position:absolute;display:inline-block;left:'+(Crafty.DOM.window.width/2-200/2)+'px;top:'+(Crafty.DOM.window.height/2-200/2)+'px"><h1></h1></div>')
+				//;
+	.replace(background+'<div style="position:absolute;display:inline-block;left:'+(Crafty.DOM.window.width/2-200/2)+'px;top:'+(Crafty.DOM.window.height/2-200/2)+'px"><h1></h1></div>')
+				;
+
+
+     Crafty.audio.setChannels(2);
+     Crafty.audio.play('bgsound',-1);
+/*	 
+Crafty.e("2D, DOM, Fourway, hero") //Collision
+.attr({x:100, y:100})
+
+.checkHits('box') // check for collisions with entities that have the Solid component in each frame
+.bind("HitOn", function(hitData) {
+        console.log("я у ящика!");
+})
+.bind("HitOff", function(hitData) {
+        console.log("я ушел...");
+})
+
+.fourway(4);
+*/
+var walls=[
+[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+[1,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,1],
+[1,0,0,2,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,1],
+[1,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,3,0,0,1],
+[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+[1,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,1],
+[1,0,0,0,0,0,2,2,0,0,0,0,0,0,0,0,0,0,0,3,1],
+[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+[1,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+];
+
+
+var levelSize=[walls[0].length, walls.length]; //размер уровня: [столбцы, строки]
+var levelPos=[5,5]; //Левый верхний угол лабиринта в блоках (размер 1 блока = размеру 1 тайла)
+
+for (j=0;j<levelSize[1];j++)//j строки
+	for (i=0;i<levelSize[0];i++) { //i - столбцы
+		//alert('i='+i+' j='+j+' walls[i,j]='+walls[i,j]);
+		uid=i.toString()+j.toString();//UID уникальный идентификтор тайла.
+		
+		if (walls[j][i]==1) tile="wall";
+		else if (walls[j][i]==2) tile="box";
+		else if (walls[j][i]==3) tile="monster";
+		else if (walls[j][i]==4) tile="hero";
+		else tile="floor";
+		
+		Crafty.e("2D, DOM, floor").attr({x:30*(levelPos[0]+i), y:30*(levelPos[1]+j),z:0});
+
+
+		if (walls[j][i]>0) Crafty.e("2D, DOM, "+tile+", id"+uid).attr({x:30*(levelPos[0]+i), y:30*(levelPos[1]+j),z:1});
+// к tile добавляется uid (порядковый номер )
+	}
+//addComponent — добавляет компонент к выбранному объекту
+	Crafty("hero").addComponent("Fourway").fourway(4);
+	
+	//Crafty("id50").destroy();
+	Crafty("id50").attr({x:150,y:150,w:100,h:100}); //cдвиг стенки
+	//Crafty("id133").addComponent("Fourway").fourway(4); //монстер
+	
+	
+
+
+Crafty.e("2D, DOM, Text, Mouse") //надпись в меню
+  .attr({x:10,y:10,w:100,h:100})
+  .textFont({ type: 'bold', family: 'Tahoma', size:"24px" })
+  .css({"background-color":"#080","color":"#FFF"})
+  .origin("center")
+  .text("в Меню")
+  .bind('Click', function (e){
+		Game.start("Menu");
+  });
+
+});
+
+
+
+///////////////////////////////////////////
+/////////////Scene: LEVEL 2////////////////
+///////////////////////////////////////////
+Crafty.defineScene("Level2", function () {
+
+     noselect='; -moz-user-select: none; -khtml-user-select: none;  -webkit-user-select: none; -o-user-select: none; ';
+     background = '<img id="bg_image" src="assets/'+sceneName+'/images/bg.jpg" style="width:'+document.body.clientWidth+'px;height:'+document.body.clientHeight+'px'+noselect+'">';
+
+	 
+     Crafty.e("2D, HTML")
+        .css({ "text-align" : "center","color":"white","width":Crafty.DOM.window.width,"height":Crafty.DOM.window.height})
+        .replace(background+'<div style="position:absolute;display:inline-block;left:'+(Crafty.DOM.window.width/2-200/2)+'px;top:'+(Crafty.DOM.window.height/2-200/2)+'px"><h1>Level 2</h1></div>');
+
+
+     Crafty.audio.setChannels(2);
+     Crafty.audio.play('bgsound',-1);
+
+
+Crafty.e("2D, DOM, Text, Mouse")
+  .attr({x:Crafty.DOM.window.width/2-200/2,y:Crafty.DOM.window.height/2,w:100,h:100})
+  .textFont({ type: 'bold', family: 'Tahoma', size:"24px" })
+  .css({"background-color":"#080","color":"#FFF"})
+  .origin("center")
+  .text("в Меню")
+  .bind('Click', function (e){
+		Game.start("Menu");
+  });
+
+});
+
+
+
+
+///////////////////////////////////////////
+//////////SCENE: Menu /////////////////////
+///////////////////////////////////////////
+Crafty.defineScene("Menu", function () {
+
+       Crafty.background('#000 url(assets/'+sceneName+'/images/bg.jpg)'); //background
+       Crafty.audio.setChannels(2); //кол-во каналов для звука
+       Crafty.audio.play('bgsound',-1);
+
+var selectedmenu=0; //номер текущего пункта меню
+
+//okButton надпись ок
+var okButton=Crafty.e("2D, DOM, Text, Mouse")
+  .attr({x:$('#game').width()/2-24,y:$('#game').height()/2-22,w:50,h:32,z:2})//позиционирование "ОК". w:50,h:32 область действия клика, z:2 высота слоя
+  .textFont({ type: 'bold', family: 'Tahoma', size:"32px" })
+  .text('OK').css({"color":"#555"})
+  .bind('MouseOver', function (e){ //bind обработчик событий
+    this.css({"color":"#3C3"});
+  })
+  .bind('MouseOut', function (e){
+    this.css({"color":"#555"});
+  })
+  .bind('Click', function (e){
+    this.css({"color":"#C00"});
+	switch (selectedmenu) {
+		case 0: {
+			alert('Начать сначала');
+			break;
+		}
+		case 1: {
+			 Game.start("Level2");
+			break;
+		}
+		case 2: {
+			 Game.start("Level1");
+			break;
+		}
+		case 3: {
+			alert('Вернуться обратно');
+			break;
+		}
+	}
+  })
+  .unselectable(); //запрет выделения мышью
+
+
+
+var wheel=Crafty.e("2D, DOM, Mouse, Tween, menuWheel")//колесо menuWheel в ассетах
+  .attr({x:$('#game').width()/2-Crafty.e("menuWheel")._w/2,y:$('#game').height()/2-Crafty.e("menuWheel")._h/2})//позиционирование
+  //внутр переменные _w _h определяют размеры вызываемого объекта нпр. menuWheel
+  .origin("center") //перемещение оси вращения в центр объекта. По умолчанию лев верхн угол
+ .bind('TweenEnd', function(e) { //событие окончания вращения
+          if (this.rotation%90==0) { //остаток от деления =0 //если поворот на четверть завершен 
+                Crafty.audio.stop('stonemoving');
+                selectedmenu=Math.round(this._rotation/90)%360%4;//рассчитывает значение выбранного пункта меню
+                if (selectedmenu<0) selectedmenu+=4;//если <0 рассчитываем нормальное значение пункта меню
+				okButton.css({"visibility":""});//вкл видимость кнопки ОК
+          }
+  });
+
+
+Crafty.e("2D, DOM, Mouse, Tween, menuWheelBox") //menuWheelBox заглушка сверху
+  .attr({x:$('#game').width()/2-Crafty.e("menuWheelBox")._w/2,y:$('#game').height()/2-Crafty.e("menuWheelBox")._h/2,z:1})
+  //позиционирование и обл действия
+  .origin("center")//перемещение оси вращения в центр объекта.
+  .bind('MouseDown',function(e){
+     if(e.mouseButton == Crafty.mouseButtons.LEFT ) { //предохраняет от повторного возникновения паралельных событий
+       Crafty.audio.stop('stonemoving');
+       wheel.cancelTween('rotation');
+     }
+   })
+  .bind('MouseUp', function(e) { //событие после отпускания мыши
+     if(e.mouseButton == Crafty.mouseButtons.LEFT ) {//было событие срабатывания лев кн мыши.
+       okButton.css({"visibility":"hidden"});//прячет кн ОК
+       Crafty.audio.play('stonemoving',2); //вкл звук на 2 сек
+       if (e.clientX>=wheel._x+wheel._w/2) dir=1; else dir=-1;//e.clientX коорд клика x от всего дисплея. Расчет направления вращения
+	   //если кликнули правее центра круга dir=1, вращаем по часовой. -1 против часовой
+       wheel._rotation=90*Math.round(wheel._rotation/90)%360;//установка позиции куда довернуть колесо до четверти
+       wheel.tween({rotation:wheel._rotation+90*dir}, 2000); //от текущ позиции начать вращение в нужную сторону на 90 град в теч 2 сек
+     }
+  });
+
+
+
+});
+
+
+///////////////////////////////////////////
+//////////SCENE: loading //////////////////
+///////////////////////////////////////////
+Crafty.defineScene("loading", function () { //defineScene определить сцену 
+       Crafty.background('#000');
+
+       Crafty.e("2D, HTML") //объект html
+        .css({ "text-align" : "center","color":"white","width":Crafty.DOM.window.width,"height":Crafty.DOM.window.height}) // задаем стиль
+        //replace вставляем html код для визуализации прогресс бара
+		.replace('<div style="position:absolute;display:inline-block;left:'+(Crafty.DOM.window.width/2-200/2)+'px;top:'+(Crafty.DOM.window.height/2-200/2)+'px"><h1>Loading...&nbsp;<span id="progress"></span>%<br><div style="background:#FF0;width:200px"><div id="progressbar" style="position:relative;height:1em;background:#F00"></div></div></h1></div>');
+        $("#progress").text('0'); //0% <span id="progress"></span>%
+
+
+
+var onLoad = function() {
+
+   Crafty.enterScene(sceneName); ///ЗАПУСК ОСНОВНОЙ СЦЕНЫ
+
+};
+
+
+var onProgress=function(data) {
+
+	val=data.percent.toFixed(0);//в data помещ знач %. percent(Crafty) toFixed(0) точность до целого. Метод JS
+
+	if (val<100) {
+		$("#progress").text(val); //знач %
+		$("#progressbar").width(val*2); // прогресс. Ширина заполняющего слоя 200px Процентов 100, поэтому умножаем на 2
+	} else {
+		$("#progress").text('100');
+		$("#progressbar").width(100*2);
+	}
+
+	console.log('success: ' + data.src); //покажет какой ресурс был загружен
+};
+
+
+
+var onError=function(data) {
+	console.log('---Failed!---');
+	console.log(data);
+	console.log('-------------');
+	alert("Ошибка загрузки ресурса:\n ["+data.src+"]"); //покажет какой ресурс не был загружен
+};
+
+
+////////ASSETS////////////////////////////////////////
+var assets={
+'Menu':	{
+        'paths':{ images: "assets/Menu/images/", sounds: "assets/Menu/sounds/" },
+        'audio': {
+                   'stonemoving': ['assets/Menu/sounds/stonemoving.mp3','assets/Menu/sounds/stonemoving.ogg'],
+                   'bgsound': ['assets/Menu/sounds/forest.mp3','assets/Menu/sounds/forest.ogg'],
+         },
+	'sprites':{
+		'wheel.png':{
+			"tile":300,
+			"tileh":300,
+			"map":{"menuWheel":[0,0]}
+		},
+		'wheel-box.png':{
+			"tile":300,
+			"tileh":300,
+			"map":{"menuWheelBox":[0,0]}
+		}
+
+	}
+},
+
+'Level1':{
+		
+		'paths':{ images: "assets/level1/images/", sounds: "assets/level1/sounds/" },
+        'audio': {
+                   'bgsound': ['assets/Menu/sounds/forest.mp3','assets/Menu/sounds/forest.ogg'],
+         },
+	
+		'sprites':{
+			'sprite.png':{
+				"tile":30,
+				"tileh":30,
+				"map":{"hero":[0,0], "box":[1,0], "wall":[2,0], "monster":[3,0], "floor":[4,0]}
+			}
+		}
+		
+},
+
+'Level2':{
+
+        'audio': {
+                   'bgsound': ['assets/Menu/sounds/forest.mp3','assets/Menu/sounds/forest.ogg'],
+         },
+
+},
+
+'Game':{
+
+	}
+}
+//////////////////////////////////////////////////////////////////////
+Crafty.paths(assets[sceneName]['paths']); //считывается из массива путей и помещается в Crafty.paths (243)
+assets[sceneName]['paths']=[]; //из массива assets удаляются пути ресурсов для текущей сцены. Чтобы не было конфликта с Crafty.removeAssets(assets[fromScene]); (288)
+
+////Освобождаем память для новой сцены. fromScene - из предыдущей сцены
+Crafty.removeAssets(assets[fromScene]);
+Crafty.assets=[]; //удаляет все ассеты
+
+//после зачистки загружаем новую сцену
+Crafty.load(
+assets[sceneName], //загрузка ассетов
+onLoad, //выполняется вызов объекта когда ассеты загружены
+onProgress, //вызывается пока происходит загрузка
+onError //выз когда ошибка
+);
+
+});
+
+
+Crafty.enterScene("loading"); // стр 175 Loading
+
+}, //end of start game
+
+
+init: function() {
+ Crafty.init(Crafty.DOM.window.width,Crafty.DOM.window.height,document.getElementById('game'));
+ Crafty.bind('SceneChange',function (data) { //событие смены сцены. 
+  fromScene=data.oldScene; //переменная fromScene из какой сцены вышли. oldScene и newScene -- значения обработчика события SceneChange переменные Crafty
+  toScene=data.newScene; // toScene в какую идем. data.newScene возвращает имя сцены
+  Crafty.e("2D").destroy(); //уничтожение предыдущей сцены
+  Crafty.audio.stop();
+
+ });
+
+Game.start("Menu"); //выз стр 21 --> стр 280 Crafty.enterScene("loading");
+
+} //end init...
+
+} //end of game object
+
+////MAIN START
+$(document).ready(function() {
+  Game.init();
+});
+
+
+    </script>
+
+  </body>
+</html>
