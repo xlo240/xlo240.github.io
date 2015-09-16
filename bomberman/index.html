@@ -54,6 +54,7 @@ Crafty.defineScene("Menu", function () {
 	Crafty.background('#fff'); //background
 	  
   $("#info3").text("Привет мир");
+  
   var walls=[
 [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
 [1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1],
@@ -76,21 +77,21 @@ Crafty.defineScene("Menu", function () {
 
 var levelSize=[walls[0].length, walls.length]; //размер уровня: [столбцы, строки]
 var levelPos=[0,0]; //Левый верхний угол лабиринта в блоках (размер 1 блока = размеру 1 тайла)
-
+var z_index_tile;
 for (j=0;j<levelSize[1];j++)//j строки
 	for (i=0;i<levelSize[0];i++) { //i - столбцы
 		//alert('i='+i+' j='+j+' walls[i,j]='+walls[i,j]);
 		uid=i.toString()+j.toString();//UID уникальный идентификтор тайла.
 		
-		if (walls[j][i]==1) tile="wall";
-		else if (walls[j][i]==2) tile="box";
-		else if (walls[j][i]==3) tile="monster";
-		else if (walls[j][i]==4) tile="hero";
+		if (walls[j][i]==1) {tile="wall"; z_index_tile=2;}
+		else if (walls[j][i]==2) {tile="box"; z_index_tile=2;}
+		else if (walls[j][i]==3) {tile="monster"; z_index_tile=1;}
+		else if (walls[j][i]==4) {tile="hero"; z_index_tile=1;}
 		else tile="floor";
 		
 		Crafty.e("2D, DOM, floor").attr({x:30*(levelPos[0]+i), y:30*(levelPos[1]+j),z:0});
 		
-		if (walls[j][i]>0) Crafty.e("2D, DOM, "+tile+", id"+uid).attr({x:30*(levelPos[0]+i), y:30*(levelPos[1]+j),z:1});
+		if (walls[j][i]>0) Crafty.e("2D, DOM, "+tile+", id"+uid).attr({x:30*(levelPos[0]+i), y:30*(levelPos[1]+j),z:z_index_tile});
 // к tile добавляется uid (порядковый номер )
 	}
 //addComponent — добавляет компонент к выбранному объекту
