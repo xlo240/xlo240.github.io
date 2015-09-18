@@ -1,0 +1,130 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Пазл</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	
+<style type="text/css">
+a { color: blue; font-style:italic; text-decoration:none; }
+
+.demo { float: left; margin: 0px; padding: 12px; text-align: left;}
+
+.cart_t {float:left;
+display:block;
+border-radius:5px;
+border:solid 1px #CCC;
+margin-left: 5px;
+margin-right: 5px;
+padding:5px;
+width:200px;
+margin-bottom: 5px;
+  -moz-box-shadow: 2px 2px 2px rgba(0,0,0,0.5); /* Для Firefox */
+   -webkit-box-shadow:  2px 2px 2px rgba(0,0,0,0.5); /* Для Safari и Chrome */
+   box-shadow:  2px 2px 2px rgba(0,0,0,0.5); /* Параметры тени */
+}
+.cart_t div 
+{
+	text-align:center;
+	background-color:#FFFFFF;
+}
+ 
+ 
+.parent_class {
+	width: 100%;
+}
+.img_in_par{
+	display:block;
+	height: 240px;
+	}
+/* лайтбокс */
+#overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: black url(img/spinner.gif) no-repeat scroll center center;
+}
+/*
+#lightbox {
+  position: fixed; /*width:500px; /*background-color:#00FF66;*/
+}
+*/
+
+</style>
+	<meta http-equiv="Content-Script-Type" content="text/javascript">
+	<script src="libs/jquery.js"></script>
+	<script type="text/javascript" src="libs/snapfit.js"></script>
+	<script type="text/javascript" src="libs/jquery.cookie.js"></script>
+	<script type="text/javascript" src="libs/jquery.fancybox.js"></script>
+	<link rel="stylesheet" type="text/css" href="libs/jquery.fancybox.css" media="screen" />
+</head>
+<body bgcolor="#FFFFCC">
+<table align="center">
+<tr><td height="150">
+
+</td></tr>
+<tr><td>
+<div class="parent_class">
+
+<!--<a class="fancybox fancybox.iframe" href='iframe.html'>-->
+<a class="lightbox" id="pic1" href='javascript:;'>
+<div class="cart_t">
+<div class='img_in_par'><img src="img/pic1.jpg" width="200" /></div>
+<div>Mike</div>
+</div>
+</a>
+
+<a class="lightbox" id="pic2" href='javascript:;'>
+<div class="cart_t">
+<div class='img_in_par'><img src="img/pic2.jpg" width="200" /></div>
+<div>Кошкомонтаж</div>
+</div>
+</a>
+
+<a class="lightbox" id="pic3" href='javascript:;'>
+<div class="cart_t">
+<div class='img_in_par'><img src="img/pic3.jpg" width="200" /></div>
+<div>Голова</div>
+
+</div>
+</a>
+<a class="lightbox" id="pic4" href='javascript:;'>
+<div class="cart_t">
+<div class='img_in_par'><img src="img/pic4.png" width="200" /></div>
+<div>Букет</div>
+
+</div>
+</a>
+<a class="lightbox" id="pic5" href='javascript:;'>
+<div class="cart_t">
+<div class='img_in_par'><img src="img/pic5.jpg" width="200" /></div>
+<div id="aaa"> Micky</div>
+</div>
+</a>
+
+
+</div>
+</td></tr></table>
+
+
+<script>
+$(document).ready(function() {
+
+$('.fancybox').fancybox(); //для тега
+$(".lightbox").click(function() {
+console.log("main id= "+this.id);
+$.cookie('img_path', 'img/'+this.id+'.jpg');		
+// а так можно удалить кукисы
+//$.cookie('cookie_name', null);	
+				$.fancybox.open({
+					href : 'iframe.html',
+					type : 'iframe',
+					padding : 5
+				});
+	
+}); 
+});//end document ready
+</script>
+</body>
+</html>

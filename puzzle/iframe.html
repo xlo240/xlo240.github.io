@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>fancyBox - iframe demo</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<script src="libs/jquery.js"></script>
+	<!--<script type="text/javascript" src="libs/jquery.fancybox.js"></script>-->
+	<script type="text/javascript" src="libs/snapfit.js"></script>
+	<script type="text/javascript" src="libs/jquery.cookie.js"></script>
+	<style type="text/css">
+	ul {font-size:12px; color:#FF0000; padding-left:10px}
+	</style>
+</head>
+<body>
+<script>
+	$(document).ready(function(){
+	//console.log("znachenie "+$.cookie('img_path'));
+	$('img').attr('src', $.cookie('img_path'));
+	});
+	
+	</script>
+<div style="overflow:hidden; width:600px; height:auto; ">
+	<!--
+	<p><a href="javascript:parent.jQuery.fancybox.close();">Close iframe parent</a></p>
+	-->
+	<div style="display:block; float:left; padding-left:66px;">
+	  <ul>
+	    <li>Повернуть на 90 градусов — двойной клик</li>
+	    <li>Отразить по вертикали — Shift + двойной клик</li>
+	    <li>Отразить по горризонтали — Правый клик мыши.</li>
+      </ul>
+	  <p><strong>Выберите размер пазлов.</strong></p>
+	<select id="xlo2" size="1" onchange="snapfit.reset(document.getElementById('puzzle_img'),parseInt(this.options[this.selectedIndex].value));">
+<option value="0">160px (extrem low)</option>
+<option value="1">128px (very low)</option>
+<option value="2">104px (low)</option>
+<option value="3" selected="selected">080px (medium)</option>
+<option value="4">064px (high)</option>
+<option value="5">056px (very high)</option>
+<option value="6">048px (extrem high)</option>
+</select>
+
+<button type="button" onclick="snapfit.admix(document.getElementById('puzzle_img'));">Перемешать</button>
+<button type="button" onclick="snapfit.solve(document.getElementById('puzzle_img'));">Собрать</button><br>
+  </div>
+	<div style="display:block; float:left;">
+	<p><img id="puzzle_img" onload="snapfit.add(this,{callback: function() {alert('You solved the puzzle!');}, aborder:true, aimage:true, polygon:true, space:20});" src="" /></p>
+	</div>
+	
+</div>
+
+</body>
+</html>
