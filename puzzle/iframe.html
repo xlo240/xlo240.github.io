@@ -8,7 +8,8 @@
 	<script type="text/javascript" src="libs/snapfit.js"></script>
 	<script type="text/javascript" src="libs/jquery.cookie.js"></script>
 	<style type="text/css">
-	ul {font-size:12px; color:#FF0000; padding-left:10px}
+	.red_class {color:#FF0000; }
+	ul {font-size:12px; padding-left:10px;}
 	</style>
 </head>
 <body>
@@ -17,17 +18,20 @@
 	//console.log("znachenie "+$.cookie('img_path'));
 	$('img').attr('src', $.cookie('img_path'));
 	});
-	
+	function completeFunc(){
+	$.cookie('selector', 1);
+	alert('Поздравляем! Пазл собран!'); //choose_id_click
+	javascript:parent.jQuery.fancybox.close();//закрываем окно
+	}
 	</script>
 <div style="overflow:hidden; width:600px; height:auto; ">
 	<!--
 	<p><a href="javascript:parent.jQuery.fancybox.close();">Close iframe parent</a></p>
 	-->
-	<div style="display:block; float:left; padding-left:66px;">
+	<div style="display:block; float:left; padding-left:66px; padding-right:60px;">
 	  <ul>
-	    <li>Повернуть на 90 градусов — двойной клик</li>
-	    <li>Отразить по вертикали — Shift + двойной клик</li>
-	    <li>Отразить по горризонтали — Правый клик мыши.</li>
+	    <li><span class="red_class">Повернуть на 90 градусов</span> — двойной клик</li>
+	    <li><span class="red_class">Отразить по горризонтали</span> — Правый клик мыши (при правильном позиционировании по горризонтали пазл становится ярким).</li>
       </ul>
 	  <p><strong>Выберите размер пазлов.</strong></p>
 	<select id="xlo2" size="1" onchange="snapfit.reset(document.getElementById('puzzle_img'),parseInt(this.options[this.selectedIndex].value));">
@@ -43,8 +47,8 @@
 <button type="button" onclick="snapfit.admix(document.getElementById('puzzle_img'));">Перемешать</button>
 <button type="button" onclick="snapfit.solve(document.getElementById('puzzle_img'));">Собрать</button><br>
   </div>
-	<div style="display:block; float:left;">
-	<p><img id="puzzle_img" onload="snapfit.add(this,{callback: function() {alert('You solved the puzzle!');}, aborder:true, aimage:true, polygon:true, space:20});" src="" /></p>
+	<div>
+<p><img id="puzzle_img" onload="snapfit.add(this,{callback: function() {completeFunc();}, aborder:true, aimage:true, polygon:true, space:20});" src="" /></p>
 	</div>
 	
 </div>
